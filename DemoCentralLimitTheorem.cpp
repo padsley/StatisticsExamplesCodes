@@ -12,6 +12,9 @@
     TH1F *hCLM_LOG = new TH1F("hCLM_LOG","hCLM_LOG",1000,0,0.01);
     TH1F *hCLM_LOG_2 = new TH1F("hCLM_LOG_2","hCLM_LOG_2",1000,-20,0);
     
+    TF1 *fGaus = new TF1("fGaus","[0]*TMath::Gaus(x,[1],[2],0)",3,7);
+    TF1 *fLogNormal = new TF1("fLogNormal","[0]*TMath::LogNormal(x,[1],[2],1)",0,0.001);
+    
     for(int i=0;i<nevents;i++)
     {
         double sum = 0, product = 0;
@@ -27,10 +30,14 @@
     }
     
     hCLM->Draw();
+    fGaus->SetParameters(25,5,2);
+    hCLM->Fit(fGaus,"BRME");
     
     TCanvas *c2 = new TCanvas();
     hCLM_LOG->Draw();
     c2->SetLogy();
+    fLogNormal->SetParameters(26000,1.e6,1.e-6);
+    hCLM_LOG->Fit(fLogNormal,"BRME");
     
     TCanvas *c3 = new TCanvas();
     hCLM_LOG_2->Draw();
